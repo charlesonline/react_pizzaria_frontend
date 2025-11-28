@@ -1,0 +1,18 @@
+services:
+  pizzaria_frontend:
+    build: .
+    container_name: pizzaria_frontend
+    ports:
+      - "7006:3000"
+    volumes:
+      - ./:/app:delegated
+      - /app/node_modules
+    networks:
+      - pizzaria_appnet
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+networks:
+  pizzaria_appnet:
+    external: false
