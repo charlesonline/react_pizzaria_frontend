@@ -8,11 +8,17 @@ services:
       - ./:/app:delegated
       - /app/node_modules
     networks:
-      - pizzaria_appnet
+      pizzaria_appnet:
+        ipv4_address: 172.20.0.5
+    dns:
+      - 127.0.0.1
+      - 8.8.8.8
+      - 8.8.4.4
     environment:
       - NODE_ENV=development
     command: npm run dev
 
 networks:
   pizzaria_appnet:
-    external: false
+    external: true
+    name: backend_pizzaria_appnet
