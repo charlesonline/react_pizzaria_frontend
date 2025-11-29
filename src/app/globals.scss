@@ -28,8 +28,8 @@ body {
     background: var(--dark-700);
 }
 
-body, input, textarea, select, button, a {
-    font: 400, 1em sans-serif;
+body, input, textarea, select, button {
+    font: 400 1em sans-serif;
 }
 
 @media ( max-width: 720px ) {
