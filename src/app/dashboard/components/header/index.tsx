@@ -25,7 +25,7 @@ export function Header() {
             width={160}
             height={60}
             priority={true}
-            quality={100}
+            quality={75}
           />
         </Link>
 

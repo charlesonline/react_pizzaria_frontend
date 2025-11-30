@@ -5,11 +5,21 @@ import style from './styles.module.scss';
 import { Button } from '@/app/dashboard/components/button';
 import { UploadCloud } from 'lucide-react';
 import Image from 'next/image';
-// import { api } from '@/services/api';
-// import { getCookieClient} from '@/lib/cookieClient';
-// import { redirect } from 'next/navigation';
+import { api } from '@/services/api';
+import { getCookieClient} from '@/lib/cookieClient';
+import { redirect } from 'next/navigation';
+import { get } from 'http';
 
-export function Form(){
+interface caregoryProps{
+    id: string;
+    name: string;
+}
+
+interface formProps{
+    categories: caregoryProps[];
+}
+
+export function Form({ categories }: formProps){
     const [image, setImage] = useState<File>();
     const [previewImage, setPreviewImage] = useState("");
 
@@ -30,12 +40,46 @@ export function Form(){
 
     }
 
+    async function handleRegisterProduct(formData: FormData){
+
+        const category = formData.get('category');
+        const name = formData.get('name');
+        const price = formData.get('price');
+        const description = formData.get('description');
+
+        if(!category || !name || !price || !description || !image){
+            // alert('Preencha todos os campos!');
+            return;
+        }
+
+        const data = new FormData();
+
+        data.append('name', name);
+        data.append('price', price);
+        data.append('description', description);
+        data.append('category_id', categories[Number(category)].id);
+        data.append('image', image);
+        
+        const token = await getCookieClient();
+
+        const response = await api.post('/products', data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        console.log(response);
+
+        // redirect('/dashboard/products');
+    }
+
     return (
         <main className={style.container}>
             <h1>Novo Produto</h1>
 
             <form
                 className={style.form}
+                action={handleRegisterProduct}
             >
 
                 <label className={style.labelImage}>
@@ -56,15 +100,21 @@ export function Form(){
                             alt='Imagem do produto'
                             className={style.previewImage}
                             fill={true}
-                            quality={100}
+                            quality={75}
                             priority={true}
                         />
                     ) }
                 </label>
 
                 <select name='category'>
-                    <option key={1} value="1">Pizza</option>
-                    <option key={2} value="2">Bebidas</option>
+                    { categories.map( (category,index) => (
+                        <option
+                            key={category.id}
+                            value={index}
+                        >
+                            {category.name}
+                        </option>
+                    )) }
                 </select>
 
                 <input
