@@ -24,7 +24,7 @@ export default function Category() {
                 Authorization: `Bearer ${token}`
             }
         }).catch((error)=>{
-            // console.log('Erro ao cadastrar categoria: ', error);
+            console.error('Erro ao cadastrar categoria: ', error);
             return;
         });
 

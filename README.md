@@ -14,6 +14,29 @@ pnpm dev
 bun dev
 ```
 
+Editando o host do mac que é o mesmo esquema do Linux. O arquivo é:
+
+/etc/hosts
+
+Passo a passo direto:
+
+Abre o Terminal.
+
+Rode:
+```bash
+sudo nano /etc/hosts
+```
+
+Coloque sua entrada, por exemplo:
+127.0.0.1 pizzaws.dev
+
+Salve no nano: Ctrl+O, Enter, depois Ctrl+X.
+
+Limpe cache DNS (macOS atual):
+```bash
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
