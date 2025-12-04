@@ -5,7 +5,11 @@ import {use} from "react";
 import { OrderContext } from '@/providers/order';
 
 export function Modalorder(){
-    const { onRequestClose } = use(OrderContext);
+    const { onRequestClose, order, finishOrder } = use(OrderContext);
+
+    async function handleFinishOrder(){
+        await finishOrder(order[0].order.id);
+    }
 
     return (
         <dialog className={styles.dialogContainer}>
@@ -17,14 +21,21 @@ export function Modalorder(){
                 <article className={styles.container}>
                     <h2>Detalhes do pedido</h2>
 
-                    <span className={styles.table}>Mesa <b>4</b></span>
+                    <span className={styles.table}>Mesa <b>{order[0]?.order.table}</b></span>
+                    {order[0]?.order.name && (
+                        <span className={styles.client}> - <b>{order[0]?.order.name}</b></span>
+                    )}
 
-                    <section className={styles.item}>
-                        <span>1 - <b>Coca-Cola</b></span>
-                        <span className={styles.description}>Desrição do produto</span>
-                    </section>
+                    {order.map(item => (
+                        <section key={item.id} className={styles.item}>
+                            <span>Qtde: {item.amount} - <b>{item.product.name}</b> R$ {(parseFloat(item.product.price) * item.amount).toFixed(2)}</span>
+                            <span className={styles.description}>{item.product.description}</span>
+                        </section>
+                    ))}
 
-                    <button className={styles.buttonOrder}>Concluir pedido</button>
+                    <span className={styles.total}>Total: R$ {order.reduce((total, item) => total + (parseFloat(item.product.price) * item.amount), 0).toFixed(2)}</span>
+
+                    <button className={styles.buttonOrder} onClick={handleFinishOrder}>Concluir pedido</button>
                 </article>
             </section>
         </dialog>

@@ -5,6 +5,8 @@ import { RefreshCcw} from "lucide-react"
 import { OrderProps } from "@/lib/order.type";
 import {Modalorder} from "@/app/dashboard/components/modal"
 import { OrderContext } from '@/providers/order';
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface OrdersProps {
     orders: OrderProps[];
@@ -12,10 +14,16 @@ interface OrdersProps {
 
 export function Orders({ orders }: OrdersProps) {
     const { isOpen, onRequestOpen } = use(OrderContext);
+    const router = useRouter();
 
-    function handleDetailOrder() {
-        onRequestOpen();
+    async function handleDetailOrder(orderId: string) {
+        await onRequestOpen(orderId);
         // alert("Funcionalidade em desenvolvimento!");
+    }
+
+    function handleRefreshPage() {
+        router.refresh();
+        toast.success("Página atualizada!");
     }
 
     return (
@@ -24,19 +32,23 @@ export function Orders({ orders }: OrdersProps) {
                 
                 <section className={styles.containerHeader}>
                     <h1>Pedidos</h1>
-                    <button>
+                    <button className={styles.buttonRefresh} onClick={handleRefreshPage}>
                         <RefreshCcw size={24} color="#3fffa3" />
                     </button>
                 </section>
 
                 <section className={styles.listOrders}>
 
+                    {orders.length === 0 && (
+                        <span className={styles.emptyOrders}>Nenhum pedido aberto</span>
+                    )}
+
                     {orders.map(order => (
                         <button
                             key={order.id}
                             className={styles.orderItem}
                             type="button"
-                            onClick={handleDetailOrder}
+                            onClick={() => handleDetailOrder(order.id)}
                         >
                             <div className={styles.tag}></div>
                             <span>Mesa {order.table}</span>
